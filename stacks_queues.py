@@ -170,4 +170,4 @@ def eval(exp):
     stack = deque()
     stack.append(sign)
 
-    #
+    # do for each character

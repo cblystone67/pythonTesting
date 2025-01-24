@@ -10,8 +10,14 @@ def readFile(filename):
     contents = contents.lower()
 
     # Replace hyphens (-) with spaces
+    # Ensure Unicode dashes like \u2014 are replaced correctly
+    # Decode Unicode characters
+    contents = contents.encode('utf-8').decode('unicode_escape')
     contents = re.sub(r"['\"!.,;?(){}\[\]]", "", re.sub(r"(\d)", "", re.sub(
-        r"(?<=\w)'(?=\w)", "", re.sub(r"-", " ", contents))))
+        r"(?<=\w)'(?=\w)", "", re.sub(r"[-\u2014]", " ", contents))))
+
+    contents = re.sub(r"['\"!.,;?(){}\[\]]", "", re.sub(r"(\d)", "", re.sub(
+        r"(?<=\w)'(?=\w)", "", re.sub(r"[-\u2014]", " ", contents))))
 
     # Split into words
     words = contents.split()
@@ -22,12 +28,18 @@ def readFile(filename):
             d[word] += 1
         else:
             d[word] = 1
-    print(d)
+
+    # Sort by frequency in descending order.
+    sorted_words = sorted(d.items(), key=itemgetter(1), reverse=True)
+
+    # Print each word with its frequency.
+    for word, freq in sorted_words:
+        print(f"{freq} {word}")
 
 
 def main():
     filename = "testing.txt"
-    print(readFile(filename))
+    readFile(filename)
 
 
 if __name__ == "__main__":
